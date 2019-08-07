@@ -5,7 +5,6 @@ var mymap;
             var lyrImagery;
             var ctlAttribute;
             var ctlScale;
-            var ctlMouseposition;
             var ctlSidebar;
             var ctlSidebarToggle;
             var ctlLayers;
@@ -37,8 +36,7 @@ var mymap;
                 //********** Initialize map controls
                 ctlAttribute = L.control.attribution().addTo(mymap);
                 ctlAttribute.addAttribution('&copy; <a href="http://geocadder.bg/en">GEOCADDER</a>');
-                ctlScale = L.control.scale({position:'bottomleft', metric:false, maxWidth:200}).addTo(mymap);
-                ctlMouseposition = L.control.mousePosition().addTo(mymap);
+                ctlScale = L.control.scale({position:'bottomright', metric:true, imperial: false,maxWidth:200}).addTo(mymap);
                 ctlSidebar = L.control.sidebar('sidebar', {closeButton:false}).addTo(mymap);
                 ctlSidebarToggle = L.easyButton( 'glyphicon-log-in', function(){
                     ctlSidebar.show();
