@@ -1,0 +1,31 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+                                                                                                                                  
+"features": [
+{ "type": "Feature", "properties": { "ele": 1904.000000, "name": "SQUAW" }, "geometry": { "type": "Point", "coordinates": [ -120.23565375905996, 39.196054230389798, 1904.0 ] } },
+{ "type": "Feature", "properties": { "ele": 2130.000000, "name": "LY0N" }, "geometry": { "type": "Point", "coordinates": [ -120.35374053998642, 39.223617553710902, 2130.0 ] } },
+{ "type": "Feature", "properties": { "ele": 2140.000000, "name": "REDSTAR" }, "geometry": { "type": "Point", "coordinates": [ -120.41728818513643, 39.1811050349692, 2140.0 ] } },
+{ "type": "Feature", "properties": { "ele": 1761.000000, "name": "DUNCAN" }, "geometry": { "type": "Point", "coordinates": [ -120.48068786686441, 39.119464874267599, 1761.0 ] } },
+{ "type": "Feature", "properties": { "ele": 2046.000000, "name": "ROBINSON" }, "geometry": { "type": "Point", "coordinates": [ -120.50269578244647, 39.155451708887341, 2046.0 ] } },
+{ "type": "Feature", "properties": { "ele": 1852.000000, "name": "MILLERS" }, "geometry": { "type": "Point", "coordinates": [ -120.52569058842748, 39.1171684265137, 1852.0 ] } },
+{ "type": "Feature", "properties": { "ele": 1562.000000, "name": "DUSTY" }, "geometry": { "type": "Point", "coordinates": [ -120.5799026489258, 39.097766876220703, 1562.0 ] } },
+{ "type": "Feature", "properties": { "ele": 1383.000000, "name": "LASTCHANCE" }, "geometry": { "type": "Point", "coordinates": [ -120.6254196166992, 39.110916137695298, 1383.0 ] } },
+{ "type": "Feature", "properties": { "ele": 1327.000000, "name": "DEVILSTHUMB" }, "geometry": { "type": "Point", "coordinates": [ -120.66455078125, 39.096149444580099, 1327.0 ] } },
+{ "type": "Feature", "properties": { "ele": 544.000000, "name": "EL DORADO" }, "geometry": { "type": "Point", "coordinates": [ -120.7089864420202, 39.050623099735013, 544.0 ] } },
+{ "type": "Feature", "properties": { "ele": 1054.000000, "name": "MICHIGAN" }, "geometry": { "type": "Point", "coordinates": [ -120.73524196978941, 39.041598559514625, 1054.0 ] } },
+{ "type": "Feature", "properties": { "ele": 998.000000, "name": "FORESTHILL" }, "geometry": { "type": "Point", "coordinates": [ -120.81296539306641, 39.0209350585938, 998.0 ] } },
+{ "type": "Feature", "properties": { "ele": 484.000000, "name": "CAL 1" }, "geometry": { "type": "Point", "coordinates": [ -120.82826578671536, 38.995730996676265, 484.0 ] } },
+{ "type": "Feature", "properties": { "ele": 580.000000, "name": "CAL2" }, "geometry": { "type": "Point", "coordinates": [ -120.86050005409055, 38.975066781588367, 580.0 ] } },
+{ "type": "Feature", "properties": { "ele": 473.000000, "name": "CAL3" }, "geometry": { "type": "Point", "coordinates": [ -120.85821747453211, 38.957973875048431, 473.0 ] } },
+{ "type": "Feature", "properties": { "ele": 250.000000, "name": "CAL4" }, "geometry": { "type": "Point", "coordinates": [ -120.8838806152344, 38.958900451660199, 250.0 ] } },
+{ "type": "Feature", "properties": { "ele": 213.000000, "name": "RIVER" }, "geometry": { "type": "Point", "coordinates": [ -120.9292526245117, 38.962643703187801, 213.0 ] } },
+{ "type": "Feature", "properties": { "ele": 566.000000, "name": "GREENGATE" }, "geometry": { "type": "Point", "coordinates": [ -120.93283686064606, 38.942635296686468, 566.0 ] } },
+{ "type": "Feature", "properties": { "ele": 491.000000, "name": "ALT" }, "geometry": { "type": "Point", "coordinates": [ -120.95011270427304, 38.926910005566768, 491.0 ] } },
+{ "type": "Feature", "properties": { "ele": 348.000000, "name": "QUARRYRD" }, "geometry": { "type": "Point", "coordinates": [ -120.988021, 38.926164, 348.0 ] } },
+{ "type": "Feature", "properties": { "ele": 393.000000, "name": "POINTEDROCKS" }, "geometry": { "type": "Point", "coordinates": [ -121.024296, 38.895301, 393.0 ] } },
+{ "type": "Feature", "properties": { "ele": 186.000000, "name": "NOHANDS" }, "geometry": { "type": "Point", "coordinates": [ -121.0409698486328, 38.912967681884801, 186.0 ] } },
+{ "type": "Feature", "properties": { "ele": 329.000000, "name": "ROBIEPOINT" }, "geometry": { "type": "Point", "coordinates": [ -121.05447586849263, 38.892750143460439, 329.0 ] } },
+{ "type": "Feature", "properties": { "ele": 395.000000, "name": "PLACER" }, "geometry": { "type": "Point", "coordinates": [ -121.06718099062843, 38.896048071177759, 395.0 ] } }
+]
+}
