@@ -1,4 +1,4 @@
-var mymap;
+            var mymap;
             var lyrWS100;
             var lyrOSM;
             var lyrTopo;
@@ -19,6 +19,8 @@ var mymap;
             var strUnit = "mi";
             var numUnitMultiplierSmall=3.28;
             var strUnitSmall = "ft";
+            var intPosition;
+            var dtLastPosition = new Date();
             
             $(document).ready(function(){
                 
@@ -27,6 +29,26 @@ var mymap;
                 mymap.setView([39.1, -120.7], 10);
                 
                 // ******** Map events ************
+
+                mymap.on("locationfound", function(e){
+                    processPosition(e.latlng);
+                    dtLastPosition = new Date();
+                    $("#posInfo").html("+/-" + e.accuracy.toFixed(1) + "m");
+                    $("#buttonPositionToggle").css('color', 'green');
+                })
+
+                mymap.on("locationerror", function(e){
+                    $("#buttonPositionToggle").css('color', 'red');
+                    var dt = new Date();
+                    var interval = dt - dtLastPosition;
+                    $("#posInfo").html((interval/1000).toFixed(0)+"s");
+                })
+
+                // ******** Map timers ************
+
+                intPosition = setInterval(function(){
+                    mymap.locate({enableHighAccuracy: true}, 6000);
+                })
 
                 mymap.on('contextmenu', function(e) {
                     //  Recalculate position information on right click
