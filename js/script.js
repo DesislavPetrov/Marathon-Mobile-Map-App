@@ -47,7 +47,7 @@
                 // ******** Map timers ************
 
                 intPosition = setInterval(function(){
-                    mymap.locate({enableHighAccuracy: true}, 6000);
+                    mymap.locate({enableHighAccuracy: true}, 60000);
                 })
 
                 mymap.on('contextmenu', function(e) {
@@ -343,3 +343,17 @@
             $("#btnTableToggle").click(function(){
                 $("#divAidTableDetail").toggle();
             });
+
+            $("#btnSetupToggle").click(function(){
+                $("#divSetupDetail").toggle();
+            });
+
+            $("#numPositionInterval").on('change', function(){
+                $("#numCurrentInterval").html($("#numPositionInterval").val()+"s");
+                clearInterval(intPosition);
+                intPosition = setInterval(function(){
+                    mymap.locate({enableHighAccuracy: true});
+                    console.log(new Date());
+                }, $("#numPositionInterval").val()*1000);
+            });
+
