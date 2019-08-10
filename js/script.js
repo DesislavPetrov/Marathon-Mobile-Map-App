@@ -1,4 +1,4 @@
-            var mymap;
+var mymap;
             var lyrWS100;
             var lyrOSM;
             var lyrTopo;
@@ -20,7 +20,7 @@
             var numUnitMultiplierSmall=3.28;
             var strUnitSmall = "ft";
             var intPosition;
-            var dtLastPosition = new Date();
+            var dtLastPosition=new Date();
             
             $(document).ready(function(){
                 
@@ -29,36 +29,31 @@
                 mymap.setView([39.1, -120.7], 10);
                 
                 // ******** Map events ************
-
-                mymap.on("locationfound", function(e){
+                
+                mymap.on('locationfound', function(e){
                     processPosition(e.latlng);
                     dtLastPosition = new Date();
-                    $("#posInfo").html("+/-" + e.accuracy.toFixed(1) + "m");
-                    $("#buttonPositionToggle").css('color', 'green');
-                })
-
-                mymap.on("locationerror", function(e){
-                    $("#buttonPositionToggle").css('color', 'red');
-                    var dt = new Date();
-                    var interval = dt - dtLastPosition;
-                    $("#posInfo").html((interval/1000).toFixed(0)+"s");
-                })
-
-                // ******** Map timers ************
-
-                intPosition = setInterval(function(){
-                    mymap.locate({enableHighAccuracy: true}, 60000);
-                })
-
-                mymap.on('contextmenu', function(e) {
-                    //  Recalculate position information on right click
-                    processPosition(e.latlng);         
+                    $("#posInfo").html("+/-"+e.accuracy.toFixed(1)+"m");
+                    $("#btnPositionToggle").css('color', 'green');
                 });
+                
+                mymap.on('locationerror', function(e) {
+                    $("#btnPositionToggle").css('color', 'red');
+                    var dt = new Date();
+                    var interval = dt -  dtLastPosition;
+                    $("#posInfo").html((interval/1000).toFixed(0)+"s");
+                });
+                
+                // ******** Map Timers ************
+                
+                intPosition = setInterval(function(){
+                    mymap.locate({enableHighAcuracy:true});
+                }, 60000);
 
                 //********** Initialize map controls
                 ctlAttribute = L.control.attribution().addTo(mymap);
-                ctlAttribute.addAttribution('&copy; <a href="http://geocadder.bg/en">GEOCADDER</a>');
-                ctlScale = L.control.scale({position:'bottomright', metric:true, imperial: false,maxWidth:200}).addTo(mymap);
+                ctlAttribute.addAttribution('&copy; <a href="http://millermountain.com">Miller Mountain LLC</a>');
+                ctlScale = L.control.scale({position:'bottomright', metric:false, maxWidth:200}).addTo(mymap);
                 ctlSidebar = L.control.sidebar('sidebar', {closeButton:false}).addTo(mymap);
                 ctlSidebarToggle = L.easyButton( 'glyphicon-log-in', function(){
                     ctlSidebar.show();
@@ -224,6 +219,16 @@
                 myChart.setIntervalStartX(numStart);
                 myChart.setIntervalEndX(numStart+20);
                 
+                var minmax = returnMinMaxElevation(numStart, numStart+20);
+                var min = minmax.min;
+                var max = minmax.max;
+                
+                min = Math.floor(min/1000);
+                max = Math.ceil(max/1000);
+                myChart.setIntervalStartY(min*1000);
+                myChart.setIntervalEndY(max*1000);
+                myChart.setAxisValuesNumberY(max-min+1);
+                
                 myChart.draw();
             }
             
@@ -309,6 +314,23 @@
                 }
                 return "+"+numAccumUp.toFixed(0)+"/ -"+numAccumDown.toFixed(0);
             }
+
+            function returnMinMaxElevation(numLocStart,numLocEnd) {
+                // Calculate the minimum and maximum elevation between two locations along the line and return as an object
+                var numMin=30000;
+                var numMax=-1000;
+                for (var i=0;i<(jsnElev.length-1);i++) {
+                    if (jsnElev[i][0]>numLocStart && jsnElev[i][0]<numLocEnd){
+                        if (jsnElev[i][1]<numMin){
+                            numMin=jsnElev[i][1]
+                        }
+                        if (jsnElev[i][1]>numMax){
+                            numMax=jsnElev[i][1]
+                        }
+                    }
+                }
+                return {min:numMin, max:numMax};
+            }
             
             //*******  jQuery event handlers
             
@@ -332,6 +354,9 @@
                 
                 myChart.setIntervalStartX(0);
                 myChart.setIntervalEndX(100);
+                myChart.setIntervalStartY(0);
+                myChart.setIntervalEndY(9000);
+                myChart.setAxisValuesNumberY(10);
                 myChart.draw();
             });
             
@@ -343,17 +368,16 @@
             $("#btnTableToggle").click(function(){
                 $("#divAidTableDetail").toggle();
             });
-
+            
             $("#btnSetupToggle").click(function(){
                 $("#divSetupDetail").toggle();
             });
-
+            
             $("#numPositionInterval").on('change', function(){
                 $("#numCurrentInterval").html($("#numPositionInterval").val()+"s");
                 clearInterval(intPosition);
                 intPosition = setInterval(function(){
-                    mymap.locate({enableHighAccuracy: true});
+                    mymap.locate({enableHighAcuracy:true});
                     console.log(new Date());
                 }, $("#numPositionInterval").val()*1000);
             });
-
