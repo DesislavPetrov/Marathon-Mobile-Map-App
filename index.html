@@ -1,40 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" manifest="manifest.appcache">
+    <head>
+        <meta charset="UTF-8">
 
-<head>
-    <meta charset="UTF-8">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="Western States 100">
 
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Western States 100">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <title>WS100</title>
+        <link rel="stylesheet" href="src/leaflet.css">
+        <link rel="stylesheet" href="src/css/bootstrap.min.css">
+        <link rel="stylesheet" href="src/plugins/L.Control.Sidebar.css">
+        <link rel="stylesheet" href="src/plugins/easy-button.css">
+        
+        <script src="src/leaflet.js"></script>
+        <script src="src/turf.min.js"></script>
+        <script src="src/jquery-3.2.0.min.js"></script>
+        <script src="src/plugins/L.Control.Sidebar.js"></script>
+        <script src="src/plugins/leaflet.ajax.js"></script>
+        <script src="src/plugins/easy-button.js"></script>
+        <script src="src/plugins/leaflet-providers.js"></script>
+        <script src="src/plugins/jscharts.js"></script>
+        <script src="src/plugins/sql.js"></script>
+        <script src="src/plugins/Leaflet.TileLayer.MBTiles.js"></script>
 
-    <title>Marathon App</title>
-    <link rel="stylesheet" href="src/leaflet.css">
-    <link rel="stylesheet" href="src/css/bootstrap.min.css">
-    <link rel="stylesheet" href="src/plugins/L.Control.Sidebar.css">
-    <link rel="stylesheet" href="src/plugins/easy-button.css">
-    <link rel="stylesheet" href="css/style.css">
+        <style>
+            #mapdiv {
+                height:100vh;
+            }
+            .col-xs-6 {
+                padding-left: 0;
+            }
+            .col-xs-12, .col-xs-1 {
+                padding: 0;
+            }
+            .right {
+                text-align: right;
+            }
+            .leaflet-touch .leaflet-bar button {
+                width: 44px;
+                height: 44px;
+                line-height: 44px;
+                padding-top: 7px;
+                padding-left: 0;
+            }            
+            .leaflet-touch .leaflet-bar a {
+                width: 44px;
+                height: 44px;
+                line-height: 44px;
+            }
+            .glyphicon {
+                font-size:20pt;
+            }
+            .leaflet-touch .leaflet-control-zoom-in {
+                font-size: 36px;
+            }        
+            .leaflet-touch .leaflet-control-zoom-out {
+                font-size: 36px;
+            }        
+          @media (max-width: 991px) {
+            .leaflet-sidebar {
+              width: 100%;
+              padding: 0; }
+              .leaflet-sidebar.left.visible ~ .leaflet-left {
+                left: 100%; }
+              .leaflet-sidebar.right.visible ~ .leaflet-right {
+                right: 100%; }
+              .leaflet-sidebar.left {
+                left: -100%; }
+                .leaflet-sidebar.left.visible {
+                  left: 0; }
+              .leaflet-sidebar.right {
+                right: -100%; }
+                .leaflet-sidebar.right.visible {
+                  right: 0; }
+              .leaflet-sidebar > .leaflet-control {
+                box-shadow: none;
+                -webkit-border-radius: 0;
+                border-radius: 0; }
+                .leaflet-touch .leaflet-sidebar > .leaflet-control {
+                  border: 0; } }
+          @media (min-width: 992px) {
+            .leaflet-sidebar {
+              width: 500px; }
+              .leaflet-sidebar.left.visible ~ .leaflet-left {
+                left: 500px; }
+              .leaflet-sidebar.right.visible ~ .leaflet-right {
+                right: 500px; } 
+            }
 
-    <script src="src/leaflet.js"></script>
-    <script src="src/turf.min.js"></script>
-    <script src="src/jquery-3.2.0.min.js"></script>
-    <script src="src/plugins/L.Control.Sidebar.js"></script>
-    <script src="src/plugins/leaflet.ajax.js"></script>
-    <script src="src/plugins/easy-button.js"></script>
-    <script src="src/plugins/leaflet-providers.js"></script>
-    <script src="src/plugins/Leaflet.GoogleMutant.js"></script>
-    <script src="src/plugins/jscharts.js"></script>
+              
+            input[type="range"] {
+                -webkit-appearance: none;
+                background-color: #555;
+                height: 10px;
+            }
 
-    <style>
-       
-    </style>
-</head>
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                position: relative;
+                top: -1px;
+                z-index: 1;
+                width: 35px;
+                height: 35px;
 
-<body>
+                -webkit-border-radius: 40px;
+                -moz-border-radius: 40px;
+                border-radius: 40px;
+                background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#aaa), color-stop(50%,#333), color-stop(100%,#aaa));
+            }  
+        </style>
+    </head>
+    <body>
         <div id="mapdiv" class="col-xs-12"></div>
         <div id="sidebar">
+            <span id="txtCacheStatus" style="float:left;">UNK</span> <span id="btnRefreshCache" class="glyphicon glyphicon-refresh" style="float:left;font-size:16px;"></span>
             <span id="btnSidebarToggle" class="glyphicon glyphicon-remove" style="float:right;"></span>
             <div id="divPosition" class="col-xs-12">
                 <h4 class="text-center">Position Information <span id="btnPositionToggle" class="glyphicon glyphicon-map-marker"></span> <span id="posInfo">UNK</span></h4>
@@ -104,6 +186,7 @@
             <div id="divSetup" class="col-xs-12">
                 <h4 class="text-center">Setup <span id="btnSetupToggle" class="glyphicon glyphicon-cog"></span></h4>
                 <div id="divSetupDetail">
+                    <button id="btnRefresh" class="btn btn-primary btn-block">Refresh Data</button>
                     <h4 class="text-center">Position Interval - <span id="numCurrentInterval">60s</span></h4>
                     <div class="col-xs-1">10s</div>
                     <div class="col-xs-9">
@@ -113,7 +196,524 @@
                 </div>
             </div>
         </div>
-    <script src="js/script.js"></script>
-</body>
+        <script>
+            if (!isMobile()) {
+                if (confirm("This is not a mobile device\n\nDo you want to open the desktop site?")) {
+                    window.location.href="../western";
+                }
+            }
+            
+            var mymap;
+            var lyrWS100;
+            var lyrOSM;
+            var lyrTopo;
+            var lyrImagery;
+            var lyrTopo14;
+            var lyrCustomTiles;
+            var ctlAttribute;
+            var ctlScale;
+            var ctlSidebar;
+            var ctlSidebarToggle;
+            var ctlLayers;
+            var objBasemaps;
+            var objOverlays;
+            var jsnRoute;
+            var jsnPoints;
+            var jsnElev
+            var myChart;
+            var mrkCurrent;
+            var numUnitMultiplier=0.62;
+            var strUnit = "mi";
+            var numUnitMultiplierSmall=3.28;
+            var strUnitSmall = "ft";
+            var intPosition;
+            var dtLastPosition=new Date();
+            var appCache = window.applicationCache;
+            
+            $(document).ready(function(){
+                //********** Application Cache events
+                appCache.addEventListener('updateready', function(e){
+                    console.log("Update Ready");
+                    console.log(e);
+                    if (confirm("A new version of the app has been downloaded \n\nWould you like to reload the page")) {
+                        location.reload();
+                    }
+                });
+                
+                appCache.addEventListener('noupdate', function(e){
+                    console.log("No update");
+                    console.log(e);
+                    alert("No new version of the app is available");
+                });
+                
+                appCache.addEventListener('obsolete', function(e){
+                    console.log("Obsolete");
+                    console.log(e);
+                    alert("No manifest is currently available, loading application from server");
+                });
+                
+                appCache.addEventListener('onerror', function(e){
+                    console.log("Error");
+                    console.log(e);
+                    alert("An error occurred when loading the application from the cache. Loading application from server");
+                });
+                
+                //**********  Initialize map *************
+                mymap = L.map('mapdiv', {attributionControl:false});
+                mymap.setView([39.1, -120.7], 10);
+                
+                // ******** Map events ************
+                
+                mymap.on('locationfound', function(e){
+                    processPosition(e.latlng);
+                    dtLastPosition = new Date();
+                    $("#posInfo").html("+/-"+e.accuracy.toFixed(1)+"m");
+                    $("#btnPositionToggle").css('color', 'green');
+                });
+                
+                mymap.on('locationerror', function(e) {
+                    $("#btnPositionToggle").css('color', 'red');
+                    var dt = new Date();
+                    var interval = dt -  dtLastPosition;
+                    $("#posInfo").html((interval/1000).toFixed(0)+"s");
+                });
+                
+                // ******** Map Timers ************
+                var numPositionInterval = 60000;
+                if (localStorage.getItem('numPositionInterval')) {
+                    numPositionInterval = Number(localStorage.getItem('numPositionInterval'));
+                    $("#numPositionInterval").val(numPositionInterval/1000);
+                    $("#numCurrentInterval").html((numPositionInterval/1000)+"s");
+                } 
+                
+                intPosition = setInterval(function(){
+                    mymap.locate({enableHighAcuracy:true});
+                }, numPositionInterval);
+                
+                setInterval(function(){
+                    $("#txtCacheStatus").html(returnAppCacheStatus());
+                }, 1000);
 
+                //********** Initialize map controls
+                ctlAttribute = L.control.attribution().addTo(mymap);
+                ctlAttribute.addAttribution('&copy; <a href="http://millermountain.com">Miller Mountain LLC</a>');
+                ctlScale = L.control.scale({position:'bottomright', metric:false, maxWidth:200}).addTo(mymap);
+                ctlSidebar = L.control.sidebar('sidebar', {closeButton:false}).addTo(mymap);
+                ctlSidebarToggle = L.easyButton( 'glyphicon-log-in', function(){
+                    ctlSidebar.show();
+                }).addTo(mymap);
+                
+                //********** Initialize layers ************
+                lyrOSM = L.tileLayer.provider('OpenStreetMap.Mapnik');
+                lyrTopo = L.tileLayer.provider('OpenTopoMap');
+                lyrImagery = L.tileLayer.provider('Esri.WorldImagery');
+                lyrTopo14 = L.tileLayer.mbTiles('data/ws100_Topo_level14.mbtiles', {
+                    minZoom:14,
+                    maxZoom:14
+                });
+                lyrCustomTiles = L.tileLayer.mbTiles('data/ws100_Combined_14_16.mbtiles', {
+                    minZoom:14,
+                    maxZoom:16
+                });
+                
+                if (localStorage.getItem('jsnRoute')) {
+                    jsnRoute = JSON.parse(localStorage.getItem('jsnRoute'));
+                    lyrWSRoute = L.geoJSON(jsnRoute, {style:{color:'red'}}).addTo(mymap);
+                    jsnElev = JSON.parse(localStorage.getItem('jsnElev'));
+                    jsnPoints = JSON.parse(localStorage.getItem('jsnPoints'));
+                    lyrWSPoints = L.geoJSON(jsnPoints, {pointToLayer:processPoints}).addTo(mymap);
+                    setupLayers();
+                } else {
+                    refreshData();
+                }
+
+            });
+
+            function refreshData(){
+                lyrWSRoute = L.geoJSON.ajax('data/ws100.geojson', {style:{color:'red'}}).addTo(mymap);
+                lyrWSRoute.on('data:loaded', function(){
+                    
+                    // Get the first feature in the ws100.geojson file
+                    var arLayers=lyrWSRoute.getLayers();
+                    jsnRoute = arLayers[0].toGeoJSON();
+                    
+                    // Get the first line in the multi-line
+                    jsnRoute = turf.flatten(jsnRoute).features[0];
+                    localStorage.setItem("jsnRoute", JSON.stringify(jsnRoute));
+                    
+                    // Get the elevation data for the line
+                    $.getJSON( "data/ws100_elev.json", function( data ) {
+                        jsnElev = data;
+                        localStorage.setItem("jsnElev", JSON.stringify(jsnElev));
+                        
+                        // Get the aid station points
+                        lyrWSPoints = L.geoJSON.ajax('data/ws100_aid.geojson', {pointToLayer:processPoints}).addTo(mymap);
+                        lyrWSPoints.on('data:loaded', function(){
+                            jsnPoints = lyrWSPoints.toGeoJSON();
+                            localStorage.setItem("jsnPoints", JSON.stringify(jsnPoints))
+                            setupLayers();
+                        });
+                    });
+                });
+            }
+            
+            function setupLayers(){
+                // Create the elevation chart with aid stations
+                drawChart();
+
+                //********** Initialize layer control ************ 
+                objBasemaps = {
+                    "Open Street Maps": lyrOSM,
+                    "Topo Map":lyrTopo,
+                    "Topo Local":lyrTopo14,
+                    "Imagery":lyrImagery,
+                    "Custom":lyrCustomTiles
+                };
+
+                objOverlays = {
+                    "WS100 Course":lyrWSRoute,
+                    "WS100 Aid Stations":lyrWSPoints
+                };
+
+                ctlLayers = L.control.layers(objBasemaps, objOverlays).addTo(mymap);
+
+                mymap.addLayer(lyrTopo);
+            }
+
+
+            function processPoints(feature, ll) {
+                // Run on each aid station point as it is read in from the geojson file
+                
+                // Locate the point on the route that is closest to the point (i.e. snapped to the line)
+                var ptSnapped = turf.pointOnLine(jsnRoute, [ll.lng, ll.lat]);
+                
+                // Add properties to the aid staation features
+                feature.properties.type="Aid Station";
+                
+                // Add the location property  (i.e. distance in miles from the start of the course)
+                feature.properties.location = Number((ptSnapped.properties.location*numUnitMultiplier).toFixed(1));
+                
+                // Add the elevation property (based on the nearest elevation in the line elevation data)
+                feature.properties.elevation = findNearestElevation(ptSnapped.properties.location*numUnitMultiplier);
+                
+                // Return a marker for the aid station with a popup
+                return L.circleMarker(ll, {radius:10, color:'darkmagenta', weight:4}).bindPopup("<h4>"+feature.properties.name+"</h4>Type: "+feature.properties.type+"<br>Location: "+feature.properties.location+"<br>Elevation: "+feature.properties.elevation+"<br><a onclick='zoomAid("+feature.properties.location+")'>Zoom</a>");
+            }
+
+            function findNearestElevationPoint(numLoc) {
+                // Find the nearest elevation in the elevation data to a given location 
+
+                // This is required to place the aid station on the elevation chart as a tooltip
+                var numClosest = jsnElev[0][0];
+                var numMin = Math.abs(numLoc-numClosest);
+                for (var j=0;j<jsnElev.length;j++){
+                    var numDist = Math.abs(numLoc-jsnElev[j][0]);
+                    if (numDist<numMin) {
+                        numMin=numDist;
+                        numClosest = jsnElev[j][0]
+                    }
+                }
+                return numClosest;
+            }
+            
+            function findNearestElevation(numLoc) {
+                // Find the elevation of the nearest elevation point to a given location
+
+                // Used to calculate elevation at given points along the line.
+                var numClosest = jsnElev[0][0];
+                var numElev = jsnElev[0][1];
+                var numMin = Math.abs(numLoc-numClosest);
+                for (var j=0;j<jsnElev.length;j++){
+                    var numDist = Math.abs(numLoc-jsnElev[j][0]);
+                    if (numDist<numMin) {
+                        numMin=numDist;
+                        numClosest = jsnElev[j][0]
+                        numElev = jsnElev[j][1]
+                    }
+                }
+                return numElev;
+            }
+            
+            function drawChart() {
+                // Determine the current width of the elevation profile div
+                var strWidth = $("#divElevationProfileDetail").css("width")
+                var numWidth = Number(strWidth.substring(0,strWidth.indexOf("px")))+25;
+                
+                // Create a reference to a line chart and set the data array
+                myChart = new JSChart('divElevationProfileDetail', 'line', '');
+                myChart.setDataArray(jsnElev);
+                
+                // Modify the chart settings
+                myChart.setSize(numWidth, 250);
+                myChart.setIntervalEndY(9000);
+                myChart.setIntervalStartY(0);
+                myChart.setIntervalEndX(100);
+                myChart.setIntervalStartX(0);
+                myChart.setAxisNameX('Miles')
+                myChart.setAxisNameY('')
+                myChart.setAxisValuesNumberY(10);
+                myChart.setAxisValuesNumberX(11);
+                myChart.setTitle('');
+                myChart.setTitleFontSize(10);
+                myChart.setTitleColor('#424342');
+                myChart.setAxisValuesColor('#444444');
+                myChart.setLineColor('#FF0000');
+                myChart.setFlagRadius(8);
+                myChart.setFlagColor('#8B008B');
+                myChart.setFlagWidth(3);
+                myChart.setTextPaddingTop(0);
+                myChart.setLineSpeed(100);
+                
+                // Loop through the aid station points and create a tooltip for each one.
+                for (var i=0;i<jsnPoints.features.length;i++) {
+                    var numLoc = findNearestElevationPoint(jsnPoints.features[i].properties.location);
+                    myChart.setTooltip([numLoc, jsnPoints.features[i].properties.name]);
+                }
+                
+                myChart.draw();
+
+            }
+            
+            function zoomAid(numLoc) {
+                //Zoom the map and the elevation profile to center at a given location (distance from the start of the line)
+                
+                // find the coordiantes at the specified distance an zoom to it
+                var ptSnapped = turf.along(jsnRoute, numLoc/numUnitMultiplier);
+                mymap.setView([ptSnapped.geometry.coordinates[1],ptSnapped.geometry.coordinates[0]], 14);
+                
+                // set the width of the elevation profile to the width of the sidebar
+                var strWidth = $("#divElevationProfileDetail").css("width")
+                var numWidth = Number(strWidth.substring(0,strWidth.indexOf("px")))+25;
+                myChart.setSize(numWidth, 250);
+                
+                // set the bounds of the elevation profile to 10 miles before and after the point
+                var numStart = Math.ceil(numLoc-10);
+                if (numStart<0) {
+                    numStart=0;
+                }
+                myChart.setIntervalStartX(numStart);
+                myChart.setIntervalEndX(numStart+20);
+                
+                var minmax = returnMinMaxElevation(numStart, numStart+20);
+                var min = minmax.min;
+                var max = minmax.max;
+                
+                min = Math.floor(min/1000);
+                max = Math.ceil(max/1000);
+                myChart.setIntervalStartY(min*1000);
+                myChart.setIntervalEndY(max*1000);
+                myChart.setAxisValuesNumberY(max-min+1);
+                
+                myChart.draw();
+            }
+            
+            function processPosition(ll) {
+                // Update the map and sidebar position information based on a specified point
+                
+                // Get the point on the line closest to the specified position
+                var ptSnapped = turf.pointOnLine(jsnRoute, [ll.lng, ll.lat]);
+                // Get the location (distance from start of the line)
+                var numLoc = ptSnapped.properties.location
+                // Get the distance from the specified position to the line
+                var numDist = ptSnapped.properties.dist
+                
+                // Update the position marker on the map
+                if (mrkCurrent) {
+                    mrkCurrent.remove();
+                }
+                mrkCurrent = L.circleMarker(ll, {radius:10}).addTo(mymap);
+                
+                // Update the latitude, longitude, and elevation values
+                $("#txtLatitude").html(ll.lat.toFixed(5));
+                $("#txtLongitude").html(ll.lng.toFixed(5));
+                $("#txtAltitude").html(findNearestElevation(numLoc*numUnitMultiplier)+" ft");
+                
+                // Update the distance from start and distance to end values
+                $("#txtFromStart").html((numLoc*numUnitMultiplier).toFixed(2)+" "+strUnit);
+                $("#txtToFinish").html(((turf.lineDistance(jsnRoute)-numLoc)*numUnitMultiplier).toFixed(2)+" "+strUnit);
+                
+                // Update the distance and direction to the trail from the specified position
+                $("#txtToTrail").html((numDist*1000*numUnitMultiplierSmall).toFixed(0)+" "+strUnitSmall);
+                var numBearing=turf.bearing([ll.lng, ll.lat], ptSnapped);
+                if (numBearing<0) {
+                    numBearing = numBearing+360;
+                }
+                $("#txtBearing").html(numBearing.toFixed(0)+" o");
+                
+                // Highlight the distance value if further than 500 feet from the line
+                if (numDist>0.152) {
+                    $("#txtToTrail").css('background-color', 'salmon');
+                } else {
+                    $("#txtToTrail").css('background-color', 'white');
+                }
+                
+                // Zoom and center both the map and elevation profile around the specified position
+                zoomAid(numLoc*numUnitMultiplier)
+                
+                // Loop through the aid stations and calculate the distance, direction, and elevation change to them from the specified position
+                var strTable = "<table class='table table-striped'><tr><th>Name</th><th class='right'>Distance</th><th class='right'>Elevation</th><th class='right'>Direct</th></tr>";
+                for (var i=0;i<jsnPoints.features.length;i++){
+                    var ptCurrent = jsnPoints.features[i];
+                    // Calculate the distance along the trail to the aid station
+                    var numTrailDist = ptCurrent.properties.location-(numLoc*numUnitMultiplier);
+                    // Only show aid stations from five miles back to the end of the route
+                    if (numTrailDist>-5) {
+                        // Calculate the distance and direction to the aid station "as the crow flies"
+                        var numDirectDist = ll.distanceTo([ptCurrent.geometry.coordinates[1],ptCurrent.geometry.coordinates[0]]);
+                        var numBearing = turf.bearing([ll.lng, ll.lat], ptCurrent);
+                        if (numBearing<0) {
+                            numBearing=numBearing+360;
+                        }
+                        
+                        // Add table row for the aid station 
+                        strTable += "<tr><td>"+ptCurrent.properties.name+"</td><td class='right'>"+numTrailDist.toFixed(2)+"</td><td class='right'>"+returnElevChange(numLoc*numUnitMultiplier, ptCurrent.properties.location)+"</td><td class='right'>"+(numDirectDist/1000*numUnitMultiplier).toFixed(2)+" @ "+numBearing.toFixed(0)+"</td></tr>";
+                    }
+                }
+                strTable += "</table>";
+                $("#divAidTableDetail").html(strTable);
+            }
+            
+            function returnElevChange(numLocStart,numLocEnd) {
+                // Calculate the elevation change between two locations along the line and return as a string
+                var numAccumUp=0;
+                var numAccumDown=0;
+                for (var i=0;i<(jsnElev.length-1);i++) {
+                    if (jsnElev[i][0]>numLocStart && jsnElev[i][0]<numLocEnd){
+                        var numNet = jsnElev[i+1][1]-jsnElev[i][1];
+                        if (numNet<0) {
+                            numAccumDown = numAccumDown-numNet;
+                        } else {
+                            numAccumUp = numAccumUp+numNet;
+                        }
+                    }
+                }
+                return "+"+numAccumUp.toFixed(0)+"/ -"+numAccumDown.toFixed(0);
+            }
+
+            function returnMinMaxElevation(numLocStart,numLocEnd) {
+                // Calculate the minimum and maximum elevation between two locations along the line and return as an object
+                var numMin=30000;
+                var numMax=-1000;
+                for (var i=0;i<(jsnElev.length-1);i++) {
+                    if (jsnElev[i][0]>numLocStart && jsnElev[i][0]<numLocEnd){
+                        if (jsnElev[i][1]<numMin){
+                            numMin=jsnElev[i][1]
+                        }
+                        if (jsnElev[i][1]>numMax){
+                            numMax=jsnElev[i][1]
+                        }
+                    }
+                }
+                return {min:numMin, max:numMax};
+            }
+
+            function isMobile(){
+                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            
+            function isOnline(){
+                return navigator.onLine;
+            }
+            
+            function returnAppCacheStatus(){
+                switch (appCache.status) {
+                    case appCache.UNCACHED: // UNCACHED = 0
+                        return "UNCACHED";
+                        break;
+                    case appCache.IDLE: // IDLE == 1
+                        return 'IDLE';
+                        break;
+                    case appCache.CHECKING: // CHECKING == 2
+                        return 'CHECKING';
+                        break;
+                    case appCache.DOWNLOADING: // DOWNLOADING == 3
+                        return 'DOWNLOADING';
+                        break;
+                    case appCache.UPDATEREADY:  // UPDATEREADY == 4
+                        return 'UPDATEREADY';
+                        break;
+                    case appCache.OBSOLETE: // OBSOLETE == 5
+                        return 'OBSOLETE';
+                        break;
+                    default:
+                        return 'UKNOWN CACHE STATUS';
+                        break;
+                };                
+            }
+            
+            //*******  jQuery event handlers
+            
+            $("#btnSidebarToggle").click(function(){
+                ctlSidebar.hide();
+            });
+            
+            $("#btnPositionToggle").click(function(){
+                $("#divPositionDetail").toggle();
+            });
+            
+            $("#btnElevationToggle").click(function(){
+                $("#divElevationProfileDetail").toggle();
+            });
+            
+            $("#btnElevationZoomOut").click(function(){
+                // set the width of the elevation profile to the width of the sidebar
+                var strWidth = $("#divElevationProfileDetail").css("width")
+                var numWidth = Number(strWidth.substring(0,strWidth.indexOf("px")))+25;
+                myChart.setSize(numWidth, 250);
+                
+                myChart.setIntervalStartX(0);
+                myChart.setIntervalEndX(100);
+                myChart.setIntervalStartY(0);
+                myChart.setIntervalEndY(9000);
+                myChart.setAxisValuesNumberY(10);
+                myChart.draw();
+            });
+            
+            $("#btnElevationZoomIn").click(function(){
+                var ptSnapped = turf.pointOnLine(jsnRoute, mrkCurrent.toGeoJSON());
+                zoomAid(ptSnapped.properties.location*numUnitMultiplier);
+            });
+            
+            $("#btnTableToggle").click(function(){
+                $("#divAidTableDetail").toggle();
+            });
+            
+            $("#btnSetupToggle").click(function(){
+                $("#divSetupDetail").toggle();
+            });
+            
+            $("#btnRefresh").click(function(){
+                if (isOnline()) {
+                    alert("Refreshing data from server");
+                    refreshData();
+                } else {
+                    alert("No internet connection is available \n\nTry again later when you have an internet connection");
+                }
+            });
+            
+            $("#btnRefreshCache").click(function(){
+                if (isOnline()) {
+                    appCache.update();
+                } else {
+                    alert("No internet connection is available \n\nTry again later when you have an internet connection");
+                }
+                
+            });
+            
+            $("#numPositionInterval").on('change', function(){
+                $("#numCurrentInterval").html($("#numPositionInterval").val()+"s");
+                clearInterval(intPosition);
+                intPosition = setInterval(function(){
+                    mymap.locate({enableHighAcuracy:true});
+                    console.log(new Date());
+                }, $("#numPositionInterval").val()*1000);
+                localStorage.setItem('numPositionInterval', ($("#numPositionInterval").val()*1000).toString());
+            });
+            
+        </script>
+    </body>
 </html>
