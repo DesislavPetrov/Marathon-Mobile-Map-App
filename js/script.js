@@ -64,6 +64,10 @@ var mymap;
                 lyrTopo = L.tileLayer.provider('OpenTopoMap');
                 lyrImagery = L.tileLayer.provider('Esri.WorldImagery');
 
+                refreshData();
+            });
+
+            function refreshData (){
                 lyrWSRoute = L.geoJSON.ajax('data/ws100.geojson', {style:{color:'red'}}).addTo(mymap);
                 lyrWSRoute.on('data:loaded', function(){
                     
@@ -73,15 +77,18 @@ var mymap;
                     
                     // Get the first line in the multi-line
                     jsnRoute = turf.flatten(jsnRoute).features[0];
+                    localStorage.setItem("jsnRoute", JSON.stringify(jsnRoute));
                     
                     // Get the elevation data for the line
                     $.getJSON( "data/ws100_elev.json", function( data ) {
                         jsnElev = data;
+                        localStorage.setItem("jsnElev", JSON.stringify(jsnElev));
                         
                         // Get the aid station points
                         lyrWSPoints = L.geoJSON.ajax('data/ws100_aid.geojson', {pointToLayer:processPoints}).addTo(mymap);
                         lyrWSPoints.on('data:loaded', function(){
                             jsnPoints = lyrWSPoints.toGeoJSON();
+                            localStorage.setItem("jsnPoints", JSON.stringify(jsnPoints));
                             
                             // Create the elevation chart with aid stations
                             drawChart();
@@ -104,7 +111,8 @@ var mymap;
                         });
                     });
                 });
-            });
+            }
+
             
             function processPoints(feature, ll) {
                 // Run on each aid station point as it is read in from the geojson file
